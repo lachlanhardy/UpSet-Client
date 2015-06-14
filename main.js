@@ -1,6 +1,7 @@
 (function () {
 
-  var fake = [{"pattern":"solid","colour":"purple","number":"two","shape":"tilde"},{"pattern":"stripe","colour":"purple","number":"three","shape":"oval"},{"pattern":"empty","colour":"green","number":"one","shape":"diamond"},{"pattern":"stripe","colour":"red","number":"two","shape":"diamond"},{"pattern":"solid","colour":"red","number":"two","shape":"tilde"},{"pattern":"stripe","colour":"purple","number":"two","shape":"diamond"},{"pattern":"stripe","colour":"red","number":"three","shape":"diamond"},{"pattern":"solid","colour":"green","number":"one","shape":"tilde"},{"pattern":"empty","colour":"purple","number":"one","shape":"oval"},{"pattern":"empty","colour":"red","number":"three","shape":"oval"},{"pattern":"stripe","colour":"green","number":"three","shape":"diamond"},{"pattern":"empty","colour":"red","number":"one","shape":"tilde"}];
+  var fake = [{"pattern":"solid","colour":"purple","number":"two","shape":"tilde"},{"pattern":"stripe","colour":"purple","number":"three","shape":"oval"},{"pattern":"empty","colour":"green","number":"one","shape":"diamond"},{"pattern":"stripe","colour":"red","number":"two","shape":"diamond"},{"pattern":"solid","colour":"red","number":"two","shape":"tilde"},{"pattern":"stripe","colour":"purple","number":"two","shape":"diamond"},{"pattern":"stripe","colour":"red","number":"three","shape":"diamond"},{"pattern":"solid","colour":"green","number":"one","shape":"tilde"},{"pattern":"empty","colour":"purple","number":"one","shape":"oval"},{"pattern":"empty","colour":"red","number":"three","shape":"oval"},{"pattern":"stripe","colour":"green","number":"three","shape":"diamond"},{"pattern":"empty","colour":"red","number":"one","shape":"tilde"}],
+    selected = [];
 
   upset = {
     setup: function () {
@@ -17,6 +18,17 @@
       $.post(upset.loginURL, {
         user_name: 'foo'
       }).done(function () {
+        upset.getData();
+      });
+    },
+
+    guess: function () {
+      $.post(upset.postURL, {
+        index1: selected[0],
+        index2: selected[1],
+        index3: selected[2]
+      }).done(function () {
+        selected = [];
         upset.getData();
       });
     },
@@ -42,6 +54,8 @@
       var cards = data,
           $grid = $('.grid');
 
+          $grid.empty();
+
       $(cards).each(function() {
         $grid.append(upset.card.createCard(this));
       });
@@ -55,6 +69,27 @@
       for (var i = upset.dimensions.number(card); i > 0; i--) {
         $card.append("<img src='railsset-icons/" + imageName + "' style='background: "+ upset.dimensions.colour(card) + "'/>")
       };
+
+      
+
+      $card.on("click", function() {
+        var $this = $(this);
+
+        if ($this.hasClass("selected") == true) {
+          $this.removeClass("selected");
+          selected.pop($this.index());
+          console.log(selected);
+        } else {
+          $this.addClass("selected");
+          selected.push($this.index());
+          console.log(selected);
+
+          if (selected.length == 3) {
+            upset.guess()
+          }
+
+        };
+      });
 
       return $card.append(card);
     }

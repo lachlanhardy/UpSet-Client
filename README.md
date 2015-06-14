@@ -1,6 +1,6 @@
 upset-client
 ==============
-A client for Upset.
+A client for UpSet.
 
 Prettified in [Raphaël](http://raphaeljs.com/).
 

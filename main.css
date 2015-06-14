@@ -3,3 +3,6 @@ body {background: #484848; color: #fff;}
 .grid {width: 800px;}
 card {background: #fff; border-radius: 15px; display: inline-block; height: 195px; margin: 10px; position:relative; width: 150px;}
   card img {display: block; height: 65px; margin: 0 auto; width: 65px;}
+
+  card:hover,
+  card.selected {opacity: 0.8;}
