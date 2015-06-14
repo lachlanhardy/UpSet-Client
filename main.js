@@ -2,10 +2,6 @@
 
   upset = {
     setup: function () {
-      var base = upset.utils.random(100);
-      while (base--) {
-          // upset.diagonal(base);
-      }
       upset.getData();
     },
 
@@ -15,34 +11,16 @@
     postURL: "http://10.0.1.81:9292/guess",
 
     getData: function () {
-      console.log("we should get some data here");
       $.ajax({
          url: upset.queryURL,
          dataType: 'jsonp',
          jsonp: 'callback',
          jsonpCallback: 'upset.draw'
       });
-      // upset.draw();
     },
 
     draw: function(data){
       upset.card.display(data);
-    },
-
-    shapes: function(){
-
-    },
-
-    patterns: function(){
-
-    },    
-
-    numbers: function(){
-
-    },
-
-    colours: function(){
-
     }
 
   };
@@ -63,26 +41,33 @@
           $grid = $('.grid');
 
       $(cards).each(function() {
-        $grid.append(upset.card.createCard());
+        $grid.append(upset.card.createCard(this));
       });
 
     },
 
-    createCard: function() {
+    createCard: function(card) {
       var $card = $("<div class='card'>"),
           paperWidth = 150,
           paperHeight = 250,
           r = Raphael(0, 0, paperWidth, paperHeight);
 
-      var cards = r.rect(0, 0, paperWidth, paperHeight, 15)
+      var cardBacking = r.rect(0, 0, paperWidth, paperHeight, 15)
                      .attr({
-                      fill: "hsb(" + Math.random() + "," + Math.random() + "," + Math.random() + ")",
+                      fill: "hsb(0, 0, 0)",
                       stroke: "none",
-                      opacity: Math.random()
+                      opacity: 0.1
+                     });
+
+      var symbol = r.rect((paperWidth / 2), (paperHeight / 2), 10, 10, 0)
+                    .attr({
+                      fill: upset.utils.colour(card.colour),
+                      stroke: "none",
+                      opacity: 1
                      });
       return $card.append(r.canvas);
     },
-    
+
     end: function(){
       console.log("+-------+");
     },
@@ -97,19 +82,56 @@
 
   };
 
+
+
   upset.utils = upset.utils || {};
   upset.utils = {
-    random: function (multiplier) {
-      return Math.floor(Math.random() * multiplier + 1);
+    pattern: function (pattern) {
+      switch (pattern) {
+        case "solid":
+          console.log("this is solid");
+          break
+        case "stripe":
+          console.log("this is striped");
+          break
+        case "empty":
+          console.log("this is empty");
+          break
+      };
     },
 
-    randomX: function () {
-      return paperWidth - upset.utils.random(paperWidth);
+    shape: function(shape){
+      switch (shape) {
+        case "oval":
+          console.log("this is an oval");
+          break
+        case "diamond":
+          console.log("this is a diamond");
+          break
+        case "tilde":
+          console.log("this is a tilde");
+          break
+      };
+    },   
+
+    number: function(number){
+
     },
 
-    randomY: function () {
-      return paperHeight - upset.utils.random(paperHeight);
+    colour: function(colour){
+      switch (colour) {
+        case "green":
+          return "hsb(120, 100, 100)"
+          break
+        case "red":
+          return "hsb(0, 100, 100)";
+          break
+        case "purple":
+          return "hsb(290, 100, 100)"
+          break
+      };
     }
+
   };
 
   $(function () {upset.setup();});
