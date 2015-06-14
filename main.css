@@ -1,4 +1,4 @@
-body {background: gold; color: #000;}
+body {background: #fff; color: #000;}
 
-.card {height: 250px; position:relative; width: 150px;}
-
+.grid {width: 800px;}
+.card {display: inline-block; height: 250px; margin: 1em; position:relative; width: 150px;}

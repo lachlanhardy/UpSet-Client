@@ -16,17 +16,17 @@
 
     getData: function () {
       console.log("we should get some data here");
-      // $.ajax({
-      //    url: upset.queryURL,
-      //    dataType: 'jsonp',
-      //    jsonp: 'callback',
-      //    jsonpCallback: 'upset.draw'
-      // });
-      upset.draw();
+      $.ajax({
+         url: upset.queryURL,
+         dataType: 'jsonp',
+         jsonp: 'callback',
+         jsonpCallback: 'upset.draw'
+      });
+      // upset.draw();
     },
 
     draw: function(data){
-      upset.card.display();
+      upset.card.display(data);
     },
 
     shapes: function(){
@@ -49,7 +49,7 @@
 
   upset.card = upset.card || {};
   upset.card = {
-    display: function(){
+    display: function(data){
       console.log("drawing a card");
       upset.card.end();
       upset.card.patternLine();
@@ -59,30 +59,30 @@
       upset.card.patternLine();
       upset.card.end();
 
-      $card = $(".card");
+      var cards = data,
+          $grid = $('.grid');
 
-      var things = function() {
-        var paperWidth = $card.width(),
-            paperHeight = $card.height(),
-            r = Raphael(0, 0, paperWidth, paperHeight);
-
-        var cards = r.rect(0, 0, paperWidth, paperHeight, 15)
-                       .attr({
-                        fill: "hsb(" + Math.random() + "," + Math.random() + "," + Math.random() + ")",
-                        stroke: "none",
-                        opacity: Math.random()
-                       });
-        console.log(r);
-
-        return r.canvas
-      };
-      $card.each(function() {
-        $(this).append(things);
+      $(cards).each(function() {
+        $grid.append(upset.card.createCard());
       });
-
 
     },
 
+    createCard: function() {
+      var $card = $("<div class='card'>"),
+          paperWidth = 150,
+          paperHeight = 250,
+          r = Raphael(0, 0, paperWidth, paperHeight);
+
+      var cards = r.rect(0, 0, paperWidth, paperHeight, 15)
+                     .attr({
+                      fill: "hsb(" + Math.random() + "," + Math.random() + "," + Math.random() + ")",
+                      stroke: "none",
+                      opacity: Math.random()
+                     });
+      return $card.append(r.canvas);
+    },
+    
     end: function(){
       console.log("+-------+");
     },
