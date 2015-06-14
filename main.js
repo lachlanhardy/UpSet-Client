@@ -5,8 +5,6 @@
       upset.getData();
     },
 
-    // SELECT * FROM html WHERE url="http://brooklynbeta.org/about" and xpath="//div[@id='people']/ul"
-    // query: "http://query.yahooapis.com/v1/public/yql?q=SELECT%20*%20FROM%20html%20WHERE%20url%3D%22http%3A%2F%2Fbrooklynbeta.org%2Fabout%22%20and%20xpath%3D%22%2F%2Fdiv%5B%40id%3D'people'%5D%2Ful%22&format=json",
     queryURL: "http://10.0.1.81:9292/grid",
     postURL: "http://10.0.1.81:9292/guess",
 
@@ -29,13 +27,6 @@
   upset.card = {
     display: function(data){
       console.log("drawing a card");
-      upset.card.end();
-      upset.card.patternLine();
-      upset.card.patternLine();
-      upset.card.symbolLine();
-      upset.card.patternLine();
-      upset.card.patternLine();
-      upset.card.end();
 
       var cards = data,
           $grid = $('.grid');
@@ -47,37 +38,37 @@
     },
 
     createCard: function(card) {
-      var $card = $("<card>"),
-          paperWidth = 150,
-          paperHeight = 250,
-          r = Raphael(0, 0, paperWidth, paperHeight);
+      card.width = 150;
+      card.height = 250;
+      card.r = Raphael(0, 0, card.width, card.height);
 
-      var cardBacking = r.rect(0, 0, paperWidth, paperHeight, 15)
+      var cardBacking = card.r.rect(0, 0, card.width, card.height, 15)
                      .attr({
                       fill: "hsb(0, 0, 0)",
                       stroke: "none",
                       opacity: 0.1
                      });
 
-      var symbol = r.rect((paperWidth / 2), (paperHeight / 2), 10, 10, 0)
+      upset.utils.pattern(card);
+
+      var symbol = card.r.rect(upset.utils.centrePoint(card.width), upset.utils.centrePoint(card.height), 10, 10, 0)
                     .attr({
                       fill: upset.utils.colour(card.colour),
                       stroke: "none",
                       opacity: 1
                      });
-      return $card.append(r.canvas);
-    },
 
-    end: function(){
-      console.log("+-------+");
-    },
+      var oval = card.r.ellipse(upset.utils.centrePoint(card.width), upset.utils.centrePoint(card.height), 30, 50)
+                  .attr({
+                    fill: upset.utils.colour(card.colour),
+                    stroke: "none",
+                    opacity: 1
+                   });
 
-    patternLine: function(){
-      console.log("|xxxxxxx|")
-    },
+      console.log(card.r);
 
-    symbolLine: function(){
-      console.log("|xx ◊ xx|")
+      var $card = $("<card>");
+      return $card.append(card.r.canvas);
     }
 
   };
@@ -86,16 +77,33 @@
 
   upset.utils = upset.utils || {};
   upset.utils = {
-    pattern: function (pattern) {
-      switch (pattern) {
+    centrePoint: function (value) {
+      return (value / 2)
+    },
+
+    pattern: function (card) {
+      switch (card.pattern) {
         case "solid":
-          console.log("this is solid");
+          var solid = card.r.rect(0, 0, card.width, card.height, 15)
+               .attr({
+                fill: upset.utils.colour(card.colour),
+                stroke: "none",
+                opacity: 0.5
+               });
           break
         case "stripe":
-          console.log("this is striped");
+          var loop = 10;
+          for (var i = 0; i < loop; i++) {
+            card.r.path("M" + i + "0 " + 100 + " L" + 100 + " " + i + "0")
+                  .attr({
+                    stroke: upset.utils.colour(card.colour),
+                    "stroke-width": 2,
+                    opacity: 0.5
+                  });
+          };
           break
         case "empty":
-          console.log("this is empty");
+          // empty needs no love
           break
       };
     },
