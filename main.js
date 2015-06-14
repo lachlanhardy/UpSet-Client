@@ -47,7 +47,7 @@
     },
 
     createCard: function(card) {
-      var $card = $("<div class='card'>"),
+      var $card = $("<card>"),
           paperWidth = 150,
           paperHeight = 250,
           r = Raphael(0, 0, paperWidth, paperHeight);
@@ -115,21 +115,32 @@
     },   
 
     number: function(number){
-
+      switch (number) {
+        case "one":
+          console.log("There is one symbol");
+          break
+        case "two":
+          console.log("there are two symbols");
+          break
+        case "three":
+          console.log("there are three symbols");
+          break
+      };
     },
 
     colour: function(colour){
       switch (colour) {
         case "green":
-          return "hsb(120, 100, 100)"
-          break
+          colour = "120";
+          break;
         case "red":
-          return "hsb(0, 100, 100)";
-          break
+          colour = "0";
+          break;
         case "purple":
-          return "hsb(290, 100, 100)"
-          break
+          colour = "290";
+          break;
       };
+      return "hsb(" + colour + ", 90, 100)"
     }
 
   };
