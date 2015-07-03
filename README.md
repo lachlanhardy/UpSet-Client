@@ -1,8 +1,6 @@
 upset-client
 ==============
-A client for UpSet.
-
-Prettified in [Raphaël](http://raphaeljs.com/).
+A client for [UpSet](https://github.com/robjacoby/UpSet-Manager)
 
 I intend to make it actually useful at some point, but you know how that goes.
 
