@@ -6,3 +6,8 @@ card {background: #fff; border-radius: 15px; display: inline-block; height: 195p
 
   card:hover,
   card.selected {opacity: 0.8;}
+
+
+screen {background: #484848; height: 100%; left: 0; position: absolute; top: 0; width: 100%;}
+
+screen h1 {font-size: 14em; text-align: center;}

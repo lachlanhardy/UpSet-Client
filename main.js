@@ -5,47 +5,72 @@
 
   upset = {
     setup: function () {
-      upset.login();
+      upset.actions.login();
       // upset.draw(fake);
+      // upset.flash.screen();
     },
 
-    queryURL: "http://10.0.1.81:9292/grid",
-    postURL: "http://10.0.1.81:9292/guess",
-    loginURL: "http://10.0.1.81:9292/login",
-    meURL: "http://10.0.1.81:9292/me",
+    draw: function(data){
+      upset.card.display(data);
+    }
+  };
 
+  upset.URL = upset.URL|| {};
+  upset.URL = {
+    query: "http://10.0.1.81:9292/grid",
+    post: "http://10.0.1.81:9292/guess",
+    login: "http://10.0.1.81:9292/login",
+    me: "http://10.0.1.81:9292/me"
+  };
+
+  upset.actions = upset.actions || {};
+  upset.actions = {
     login: function () {
-      $.post(upset.loginURL, {
+      $.post(upset.URL.login, {
         user_name: 'foo'
       }).done(function () {
-        upset.getData();
+        upset.actions.getGrid();
       });
     },
 
     guess: function () {
-      $.post(upset.postURL, {
+      $.post(upset.URL.post, {
         index1: selected[0],
         index2: selected[1],
         index3: selected[2]
       }).done(function () {
+        upset.actions.getGrid();
+        upset.flash.screen("Set", "green");
+      }).fail(function () {
+        upset.flash.screen("Nope", "red");
+      }).always(function () {
         selected = [];
-        upset.getData();
+        $(".selected").removeClass("selected");
       });
     },
 
-    getData: function () {
+    getGrid: function () {
       $.ajax({
-         url: upset.queryURL,
+         url: upset.URL.query,
          dataType: 'jsonp',
          jsonp: 'callback',
          jsonpCallback: 'upset.draw'
       });
     },
 
-    draw: function(data){
-      upset.card.display(data);
-    }
+  };
 
+
+  upset.flash = upset.flash || {};
+  upset.flash = {
+    screen: function (message, colour) {
+      var $screen = $("<screen><h1>" + message + "</h1></screen>");
+      $("body").append($screen);
+      $screen.css("background", colour)
+      $screen.fadeTo(2000, 0, null, function () {
+        $screen.remove();
+      });
+    }, 
   };
 
   upset.card = upset.card || {};
@@ -53,7 +78,6 @@
     display: function(data){
       var cards = data,
           $grid = $('.grid');
-
           $grid.empty();
 
       $(cards).each(function() {
@@ -67,10 +91,8 @@
           imageName = upset.dimensions.shape(card) + "-" + upset.dimensions.pattern(card) + "-fff.png";
 
       for (var i = upset.dimensions.number(card); i > 0; i--) {
-        $card.append("<img src='railsset-icons/" + imageName + "' style='background: "+ upset.dimensions.colour(card) + "'/>")
+        $card.append("<img src='symbols/" + imageName + "' style='background: "+ upset.dimensions.colour(card) + "'/>")
       };
-
-      
 
       $card.on("click", function() {
         var $this = $(this);
@@ -82,18 +104,14 @@
         } else {
           $this.addClass("selected");
           selected.push($this.index());
-          console.log(selected);
 
           if (selected.length == 3) {
-            upset.guess()
+            upset.actions.guess()
           }
-
         };
       });
-
       return $card.append(card);
     }
-
   };
 
   upset.dimensions = upset.dimensions || {};
@@ -155,7 +173,6 @@
       };
       return "rgb(" + colour + ")"
     }
-
   };
 
   $(function () {upset.setup();});
